@@ -96,7 +96,7 @@ This is demonstrated in the second example input:
 
 ## Full solution:
 
-```
+```C++
 #include <iostream>
 #include <cstring>
 
