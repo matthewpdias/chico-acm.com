@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-/Y6pD6FV/Vv2HJnA6t+vslU6fwYXjCFtcEpHbNJ0lyAFsXTsjBbfaDjzALeQsN6M" crossorigin="anonymous"/>
+</head>
+<body class="container">
+  <h1 id="chicoacmcom"><a href="http://chico-acm.com">chico-acm.com</a></h1>
+  <h1 id="discussionofnondivisiblesubsethttpswwwhackerrankcomchallengesnondivisiblesubsetproblem">Discussion of <a href="https://www.hackerrank.com/challenges/non-divisible-subset/problem">Non-Divisible Subset</a></h1>
+  <p><br></p>
+  <h2 id="problemstatement">Problem Statement:</h2>
+  <p>Given a set, <code>S</code>, of  distinct integers, print the size of a maximal subset, <code>S'</code>, of <code>S</code> where the sum of any <code>2</code> numbers in <code>S'</code> is <strong>not</strong> evenly divisible by <code>k</code>.</p>
+  <p><strong>Input Format</strong></p>
+  <p>The first line contains <code>2</code> space-separated integers, <code>n</code> and <code>k</code>, respectively.
+  The second line contains <code>n</code> space-separated integers (we'll refer to the <code>i-th</code> value as <code>ai</code>) describing the unique values of the set.</p>
+  <p><strong>Constraints</strong></p>
+  <ul>
+  <li><code>1 &lt;= n &lt;= 10^5</code></li>
+  <li><code>1 &lt;= k &lt;= 100</code></li>
+  <li><code>1 &lt;= ai &lt;= 10^9</code></li>
+  </ul>
+  <p>All of the given numbers are distinct.</p>
+  <p><strong>Output Format</strong></p>
+  <p>Print the size of the largest possible subset (<code>S'</code>).</p>
+  <hr />
+  <p><strong>Example Input 1</strong></p>
+  <pre class="prettyprint"><code>4 3
+  1 7 2 4
+  </code></pre>
+  <p><strong>Expected Output 1</strong></p>
+  <pre class="prettyprint"><code>3
+  </code></pre>
+  <p><strong>Example Input 2</strong></p>
+  <pre class="prettyprint"><code>7 6
+  19 17 12 1 27 3 4
+  </code></pre>
+  <p><strong>Expected Output 2</strong></p>
+  <pre class="prettyprint"><code>5
+  </code></pre>
+  <hr />
+  <p><strong>Walkthrough</strong></p>
+  <p>Our task is to find the <em>size</em> of the largest subset (not the elements in the subset) of <code>S</code> such that no two elements in the subset can be added together to form a number that is perfectly divisible by <code>k</code>.</p>
+  <p>As we prepare to process all of the elements in <code>S</code>, it is important to note that the magnitude of each number does not matter because we are only concerned with how much needs to be added to each number before it becomes divisible by <code>k</code>.  For example, if <code>k = 5</code> and <code>S = {6, 4, 10004}</code>, it doesn't matter if we add <code>6</code> to <code>4</code> or <code>10004</code>, in both cases the sum will be divisible by <code>5</code>.  What matters here is <em>how much</em> can be added to each number before it becomes divisible by <code>5</code>.  We obtain this information using the modulo operator (%), which returns the remainder of a division operation.  Any two numbers whose remainders sum up to <code>k</code> will sum up to a number divisible by <code>k</code> themselves.  Continuing with our example, if we perform <code>e % k</code> for each element <code>e</code> in <code>S</code>, we get <code>Srem = {1, 4, 4}</code>.  <code>Srem</code> shows us that we have two elements in <code>S</code> which are "1 away" from <code>5</code>, and one element in <code>S</code> that is "4 away" from <code>5</code>.  So our subset for this example can contain either both of the elements with remainder 4, or the one element with remainder 1; because we are trying to maximize the number of elements in our subset, we want to pick the two elements with remainder 4.</p>
+  <p>In fact this strategy is the key to solving the problem: essentially all we do is find out how many elements have remainder <code>r</code> where <code>0 &lt;= r &lt; k</code> and then for each pair of complementing remainders (complement being a pair of remainders that sum to <code>k</code>), we choose the remainder with more elements belonging to it.</p>
+  <p>In order to keep track of how many elements in <code>S</code> have a certain remainder when divided by <code>k</code>, we maintain an array, <code>mods[]</code>, of length <code>k</code>.  We then iterate through each element, <code>e</code>, in <code>S</code> and increment <code>mods[e % k]</code>.  We can now lookup how many elements in <code>S</code> have remainder <code>r</code> when divided by <code>k</code> simply by retrieving the value located at <code>mods[r]</code>.</p>
+  <p>Here's what it looks like to create this array for our example inputs:</p>
+  <p><strong>Ex1:</strong></p>
+  <p>n = 4<br>
+  k = 3</p>
+  <p><img src="/images/ex1CreateMods.png" alt="Ex1 create mods array" /></p>
+  <p><strong>Ex2:</strong></p>
+  <p>n = 7<br>
+  k = 6</p>
+  <p><img src="/images/ex2CreateMods.png" alt="Ex2 create mods array" /></p>
+  <p>Once we have our <code>mods[]</code> array, we must use it to find each pair of complementing remainders and choose the remainder with more elements to add to our subset.  For an index <code>i</code> in <code>mods[]</code> (remember that the indices are equal to the remainders) where <code>i &lt;= floor(k/2)</code>, complement, <code>i'</code>, will be located at <code>k - i</code>.  For example, if <code>k</code> is 9, 1's complement is 8, 2's complement is 7, 3's complement is 6, and so on.  This means we can "work our way inward" as we iterate through our array to compare complements.</p>
+  <p>The first edge case we must consider is for elements that have a remainder of <code>0</code>, meaning they are perfectly-divisible by <code>k</code> already.  We can have <strong>at most one</strong> element that is perfectly divisible by <code>k</code> in our subset because the only complement to a perfect dividend is another perfect dividend, meaning if we had two or more of them, they would sum to a number perfectly-divisible by <code>k</code>.</p>
+  <p>Here we see what it looks like to scan <code>mods[]</code> in order to find out the <code>max</code> number of elements that can exist in our subset:</p>
+  <p><strong>Ex1:</strong></p>
+  <p><img src="/images/ex1GetMax.png" alt="Ex1 get maximum" /></p>
+  <p>The second edge case occurs when <code>k</code> is even and <code>S</code> contains more than one element with a remainder equal to exactly half of <code>k</code>.  If <code>k</code> is even, then elements with remainders equal to half of <code>k</code> can be added together to produce a number that is perfectly-divisible by <code>k</code>.  Just like remainders of <code>0</code>, remainders of this sort are their own complements, so we may have <strong>at most one</strong> element in our subset that is equal to <code>k/2</code> when <code>k</code> is even.</p>
+  <p>This is demonstrated in the second example input:</p>
+  <p><strong>Ex2:</strong></p>
+  <p><img src="/images/ex2GetMax.png" alt="Ex2 get maximum" /></p>
+  <hr />
+  <h2 id="fullsolution">Full solution:</h2>
+  <pre class="prettyprint"><code class="C++ language-C++">#include &lt;iostream&gt;
+  #include &lt;cstring&gt;
+
+  using namespace std;
+
+  int main() {
+      int n, k;
+      cin &gt;&gt; n &gt;&gt; k;
+
+      // Array to contain number of modulo value occurrences
+      int mods[k];
+      memset(mods, 0, sizeof(mods));
+
+      int s;
+      for(int i=0; i&lt;n; i++) {
+          cin &gt;&gt; s;
+          // Increment occurrence of modulo (indexed by modulo value)
+          ++mods[s % k];
+      }
+
+      int opt = 0;
+      for(int i=0; i &lt;= k/2; i++) {
+          if(i == (k-i)%k)
+              // Choose either 0 or 1 number perfectly-divisible by k (i == 0) OR
+              // a number perfectly-divisible by half of k (i == k/2 &amp;&amp; k % 2 == 0)
+              opt += min(mods[i], 1);
+          else
+              opt += max(mods[i], mods[(k-i)%k]);
+      }
+
+      cout &lt;&lt; opt &lt;&lt; endl;
+
+      return 0;
+  }
+  </code></pre>
+  <script src="https://cdn.rawgit.com/google/code-prettify/master/loader/run_prettify.js?skin=desert"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta/js/bootstrap.min.js" integrity="sha384-h0AbiXch4ZDo7tp9hKZ4TsHbi047NrKGLO3SEJAg45jXxnGIfYzk4Si90RDIqNm1" crossorigin="anonymous"></script>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+  </body>
+</body>
