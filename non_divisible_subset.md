@@ -1,5 +1,6 @@
 # Discussion of [Non-Divisible Subset](https://www.hackerrank.com/challenges/non-divisible-subset/problem)
 <br>
+
 ## Problem Statement:
 Given a set, `S`, of  distinct integers, print the size of a maximal subset, `S'`, of `S` where the sum of any `2` numbers in `S'` is **not** evenly divisible by `k`.
 
@@ -118,7 +119,7 @@ int main() {
     }
 
     int opt = 0;
-    for(int i=0; i*2 <= k; i++) {
+    for(int i=0; i <= k/2; i++) {
         if(i == (k-i)%k)
             // Choose either 0 or 1 number perfectly-divisible by k (i == 0) OR
             // a number perfectly-divisible by half of k (i == k/2 && k % 2 == 0)
