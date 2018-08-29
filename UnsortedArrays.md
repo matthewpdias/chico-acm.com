@@ -1,4 +1,4 @@
-#Unsorted Arrays
+# Unsorted Arrays
 
 ---
 
@@ -11,34 +11,34 @@ Given an array __*A*__ containing __*n*__ distinct integers in an unknown order,
 
 *Note*: It's possible that multiple valid solutions exist.
 
-##Input Format
+## Input Format
 
 The first line contains an integer __*n*__, the number of values in the array, and an integer __*e*__, the error goal, separated by a space.
 
 The second line contains __*n*__ space-separated integers describing the values of the elements of the array, __*A<sub>0</sub>, A<sub>1</sub>,..., A<sub>n - 1</sub>*__
 
-##Constraints
+## Constraints
 
 - 1 ≤  __*n*__ ≤ 10<sup>5</sup>
 - 0 ≤  __*e*__ ≤ n - 1
 - 1 ≤  __*A<sub>i</sub>*__ ≤ 10<sup>9</sup>
 - All __*A<sub>i</sub>*__ are distinct.
 
-##Output Format
+## Output Format
 
 Print a reordering of the original array that contains exactly __*e*__ errors.
 
-###Sample Input
+### Sample Input
 ```
 10 3
 5 3 2 10 16 67 11 8 100 75
 ```
 
-###Sample Output
+### Sample Output
 ```
 2 3 8 5 11 10 67 16 75 100
 ```
-###Explanation
+### Explanation
 
 The output contains the same values as the original array, and is sorted except for 3 errors, 8 > 5, 11 > 10, and 67 > 16.
 
@@ -46,7 +46,7 @@ The output contains the same values as the original array, and is sorted except 
 ---
 
 
-##Walkthrough
+## Walkthrough
 
 Because the initial state of the array is unknown, we likely want to sort the array, even though the solution we want will not actually be sorted. We can start therefore with a simple std::sort.
 
@@ -103,7 +103,7 @@ With this improvement our final anaylsis shows that our algorithm has a sort tha
 ---
 
 
-##Full Solution
+## Full Solution
 
 ```cpp
 #include <iostream>
