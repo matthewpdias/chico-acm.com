@@ -10,9 +10,9 @@
 <p>The second line contains <strong><em>n</em></strong> space-separated integers describing the values of the elements of the array, <strong><em>A<sub>0</sub>, A<sub>1</sub>,..., A<sub>n - 1</sub></em></strong></p>
 <h2 id="constraints">Constraints</h2>
 <ul>
-<li>1 ≤  <strong><em>n</em></strong> ≤ 10<sup>5</sup></li>
-<li>0 ≤  <strong><em>e</em></strong> ≤ n - 1</li>
-<li>1 ≤  <strong><em>A<sub>i</sub></em></strong> ≤ 10<sup>9</sup></li>
+<li>1 &lt;=  <strong><em>n</em></strong> &lt;= 10<sup>5</sup></li>
+<li>0 &lt;=  <strong><em>e</em></strong> &lt;= n - 1</li>
+<li>1 &lt;=  <strong><em>A<sub>i</sub></em></strong> &lt;= 10<sup>9</sup></li>
 <li>All <strong><em>A<sub>i</sub></em></strong> are distinct.</li>
 </ul>
 <h2 id="outputformat">Output Format</h2>
@@ -30,31 +30,27 @@
 <h2 id="walkthrough">Walkthrough</h2>
 <p>Because the initial state of the array is unknown, we likely want to sort the array, even though the solution we want will not actually be sorted. We can start therefore with a simple std::sort.</p>
 <p>After sorting the array we need to introduce the errors in the sorting. A naive look at the sample given might suggest that we can simply swap adjacent elements enough times to introduce the needed errors. However consider the following sorted array, followed by swaps,</p>
-<pre class="prettyprint"><code>1 2 3 4 5
-</code></pre>
-<pre class="prettyprint"><code>1 2 4 3 5  
-</code></pre>
-<pre class="prettyprint"><code class="   language-  ">1 4 2 3 5  
+<pre class="prettyprint"><code>
+  1 2 3 4 5<br/>
+  1 2 4 3 5 <br/>
+  1 4 2 3 5
 </code></pre>
 <p>Even after performing two swaps, only one error is introduced, because we only moved the 4 two times. 
 This problem could be removed by only swapping on every other index, such as in the sample, however this leads to another problem. The number of errors needed could be as large as n - 1. If we swap only every other index, only half that number of errors is possible. Therefore another solution is needed.</p>
 <p>We can begin inserting the largest elements at the start of the array, ensuring an error for every such element inserted. For example to generate three errors on the above example we would do the following</p>
-<pre class="prettyprint"><code class="  language- ">1 2 3 4 5 
-</code></pre>
-<pre class="prettyprint"><code>5 1 2 3 4 
-</code></pre>
-<pre class="prettyprint"><code class="  language- ">5 4 1 2 3
-</code></pre>
-<pre class="prettyprint"><code>5 4 3 1 2
+<pre class="prettyprint"><code class="  language- ">
+1 2 3 4 5<br/>
+5 1 2 3 4<br/>
+5 4 1 2 3<br/>
+5 4 3 1 2
 </code></pre>
 <p>This algorithm is valid and will generate the correct output, but it does have a problem. When we move an element to the front of the array, the remaining elements need to be shifted down, an O(n) operation. In the worst case, the number of errors needed would be n - 1, meaning we would have to do n - 1 insertions. Therefore our full solution will be O(n<sup>2</sup>) which is worse than we would like. </p>
 <p>One way to alleviate this problem is to instead do insertions into a new array. By copying the data over, we avoid shifting at all. Reducing this portion of the algorithm to O(n), although the full algorithm is still O(n log(n)), from the sort. However this solution would cause the algorithm to use an extra array increasing the memory usage unnecessarily.</p>
 <p>A third solution can perform better than both of these. Instead of creating errors by inserting elements, notice that the maximum errors that an array can have comes from being in reversed order. This is somewhat intuitive, as a reversed list is as far from being sorted as possible. We can take advantage of this be reversing only a subarray, to generate the exact number of errors needed. For example,</p>
-<pre class="prettyprint"><code>1 2 3 4 5
-</code></pre>
-<pre class="prettyprint"><code>1 5 3 4 2
-</code></pre>
-<pre class="prettyprint"><code>1 5 4 3 2
+<pre class="prettyprint"><code>
+1 2 3 4 5<br/>
+1 5 3 4 2<br/>
+1 5 4 3 2
 </code></pre>
 <p>Each step in a reversal only requires a swap, rather than a shift, so reversing is only an O(n) operation in the worst case, and takes constant memory. </p>
 <p>With this improvement our final anaylsis shows that our algorithm has a sort that is O(n log(n)) and a reversal that is O(e), e being the number of errors. Because we know the number of errors is always less than the number of elements in the array, we can conclude that the runtime of the whole algorithm is O(n log(n)).</p>
