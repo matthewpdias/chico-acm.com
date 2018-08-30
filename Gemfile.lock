@@ -1,42 +1,11 @@
 GEM
   remote: https://rubygems.org/
   specs:
-    charlock_holmes (0.7.5)
-    commonmarker (0.17.2)
-      ruby-enum (~> 0.5)
-    crass (1.0.2)
-    escape_utils (1.1.1)
-    gemoji (3.0.0)
-    github-linguist (5.2.0)
-      charlock_holmes (~> 0.7.3)
-      escape_utils (~> 1.1.0)
-      mime-types (>= 1.19)
-      rugged (>= 0.25.1)
-    i18n (0.8.6)
-    mime-types (3.1)
-      mime-types-data (~> 3.2015)
-    mime-types-data (3.2016.0521)
-    mini_portile2 (2.2.0)
-    nokogiri (1.8.0)
-      mini_portile2 (~> 2.2.0)
-    nokogumbo (1.4.13)
-      nokogiri
-    ruby-enum (0.7.1)
-      i18n
-    rugged (0.26.0)
-    sanitize (4.5.0)
-      crass (~> 1.0.2)
-      nokogiri (>= 1.4.4)
-      nokogumbo (~> 1.4.1)
 
 PLATFORMS
   ruby
 
 DEPENDENCIES
-  commonmarker
-  gemoji
-  github-linguist
-  sanitize
 
 BUNDLED WITH
    1.15.3
